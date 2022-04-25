@@ -32,11 +32,12 @@ include "conn.php";
       $tb = $_POST['mtb'];
       $date = $_POST['mdate'];
 
-      // if ($machineno == 9 || $machineno == 10 ||$machineno == 11 ||$machineno == 12 )
-      // {
-      //   $total = ($production / 100000) * 125;
-      // }
-      $total = ($production / 100000) * 125;
+      if ($machineno == "9" || $machineno == "10" ||$machineno == "11" ||$machineno == "12" )
+      {
+        $total = ($production / 100000) * 200;
+      }else {
+        $total = ($production / 100000) * 125;
+      }
 
       // $tb = $_POST['etb'];
   
@@ -65,12 +66,12 @@ include "conn.php";
       $tb = $_POST['tb'];
       $date = $_POST['date'];
       
-      // if ($machineno == 9 || $machineno == 10 ||$machineno == 11 ||$machineno == 12 )
-      // {
-      //   $total = ($production / 100000) * 125;
-      // }
-      $total = ($production / 100000) * 125;
-
+      if ($machineno == "9" || $machineno == "10" ||$machineno == "11" ||$machineno == "12" )
+      {
+        $total = ($production / 100000) * 200;
+      }else {
+        $total = ($production / 100000) * 125;
+      }
 
       // item detail
       
