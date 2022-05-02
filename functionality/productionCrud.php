@@ -104,7 +104,7 @@ include "conn.php";
           }else {
             $total = ($production / 100000) * 125;
           }
-          var_dump($total);
+          // var_dump($total);
 
         $sql = "INSERT INTO `production` (`machineno`, `name`, `production`,`duty`, `frame`, `tb`,`date`,`total`) VALUES ('$machineno', '$name', '$production','$duty', '$frame', '$tb','$date','$total')";
         $result = mysqli_query($conn,$sql);
