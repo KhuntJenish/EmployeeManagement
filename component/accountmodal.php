@@ -9,7 +9,7 @@ echo '
                 <h5 class="modal-title" id="accountModalLabel">Account Info</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"  onclick="reload()"></button>
             </div>
-            <form action="/employee/page/master/account.php" method="post">
+            <form action="/page/master/account.php" method="post">
                 <div class="modal-body">
                     <div class="container">
                         <div class="mb-3">

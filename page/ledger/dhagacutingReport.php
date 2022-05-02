@@ -3,9 +3,9 @@ session_start();
 if ($_SESSION['logout'] == true) {
     header("location: login.php");
 }  
-$_SESSION['page'] = "report";
+$_SESSION['page'] = "dhagacutingReport";
 include "../../functionality/conn.php";
-include "../../functionality/productionCrud.php";
+include "../../functionality/dhagacutingCrud.php";
 
 ?>
 
@@ -26,7 +26,7 @@ include "../../functionality/productionCrud.php";
     <link rel="stylesheet" href="//cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
 
 
-    <title>Production - report</title>
+    <title>dhagacuting - report</title>
 
 </head>
 
@@ -34,21 +34,17 @@ include "../../functionality/productionCrud.php";
 
     <?php 
     // include "component/purchaseModal.php";
-    include "../../component/addProductionModal.php";
+    include "../../component/dhagacutingModal.php";
     include "../../component/navbar.php";
     // include "../../component/alert.php";
 
     if (isset($_POST["search"])) {
-        $_SESSION['duty'] = $_POST["duty"];
-        $_SESSION['machineno'] = $_POST["machineno"];
         $_SESSION["date1"] = $_POST["date1"];
         $_SESSION["date2"] = $_POST["date2"];
         $_SESSION["name"] = $_POST["name"];
     }
-    $_SESSION['duty'] = isset($_SESSION['duty'])?$_SESSION['duty']:'DAY';
     $_SESSION["date1"] =isset($_SESSION['date1'])?$_SESSION['date1']: date("Y-m-d", strtotime ( '-1 month' , strtotime (date('Y-m-d') ) ));
     $_SESSION["date2"] = isset($_SESSION['date2'])?$_SESSION['date2']: date('Y-m-d');
-    $_SESSION["machineno"] = isset($_SESSION['machineno'])?$_SESSION['machineno']: 'All';
     $_SESSION["name"] = isset($_SESSION['name'])?$_SESSION['name']: 'All';
     $_SESSION["eTotal"] = isset($_SESSION['eTotal'])?$_SESSION['eTotal']: 0;
     ?>
@@ -56,28 +52,15 @@ include "../../functionality/productionCrud.php";
     <div class="container my-4">
         <h2>Production Report</h2>
 
-        <form action="/page/ledger/report.php" method="post">
+        <form action="/page/ledger/dhagacutingReport.php" method="post">
 
             <div class="row">
-                <div class="mb-3 col-2">
-                    <label for="title" class="form-label"> Machine no. :</label>
-                    <select class="form-select" id="machineno" name="machineno" >
-                        <option value="All">All</option>
-                        <?php
-                
-                            for ($i=1; $i <= 12  ; $i++) { 
-                                echo '<option value="'. $i.'" >'.$i.'</option>';
-                            }
-
-                        ?>
-                    </select>
-                </div>
-                <div class="mb-3 col-2">
+                <div class="mb-3 col-4">
                     <label for="title" class="form-label"> Name :</label>
                     <select class="form-select" id="name" name="name" autofocus>
                     <option value="All">All</option>
                         <?php
-                            $sql = 'SELECT * FROM `account`';
+                            $sql = 'SELECT * FROM `account` where category="DHAGACUTING"';
                             $result = mysqli_query($conn,$sql);
                             $gst = '';
                             // $row = mysqli_fetch_array($result);
@@ -88,20 +71,13 @@ include "../../functionality/productionCrud.php";
                         ?>
                     </select>
                 </div>
-                <div class="mb-3 col-2">
-                    <label for="title" class="form-label"> Duty :</label>
-                    <select class="form-select" id="duty" name="duty" >
-                        <option value="DAY" <?php echo $_SESSION['duty']=='DAY'?'selected':''; ?>>DAY</option>
-                        <option value="NIGHT" <?php echo $_SESSION['duty']=='NIGHT'?'selected':''; ?>>NIGHT</option>
-                    </select>
-                </div>
-                <div class="mb-3 col-3 ">
+                <div class="mb-3 col-4 ">
                     <label for="title" class="form-label">Start Date :</label>
                     <input type="date" class="amount form-control" id="date1" name="date1" value='<?php
                         $date = $_SESSION["date1"]?$_SESSION["date1"]:date("Y-m-d", strtotime ( '-1 month' , strtotime (date('Y-m-d') ) )) ;
                         echo $date;?>'>
                 </div>
-                <div class="mb-3 col-3">
+                <div class="mb-3 col-4">
                     <label for="title" class="form-label">End Date :</label>
                     <input type="date" class="disc form-control " id="date2" name="date2"
                         value='<?php echo  $_SESSION["date2"];?>'>
@@ -121,14 +97,11 @@ include "../../functionality/productionCrud.php";
         <table class="table" id="myTable">
             <thead>
                 <tr>
-                    <th scope="col">Machine No.</th>
                     <th scope="col">Name</th>
-                    <th scope="col">Production</th>
-                    <th scope="col">duty</th>
-                    <th scope="col">Frame</th>
-                    <th scope="col">T.B.</th>
+                    <th scope="col">Saree/Meter</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Total</th>
                     <th scope="col">Date</th>
-                    <th scope="col">salary</th>
                     <th scope="col">function</th>
                 </tr>
             </thead>
@@ -139,21 +112,17 @@ include "../../functionality/productionCrud.php";
                 if (isset($_POST["search"])) {
                    
                     $date1 =  $_POST["date1"];
-                    $date2 =  $_POST["date2"];
-                    $duty = $_POST["duty"];
-                    $machineno = $_POST["machineno"];                   
+                    $date2 =  $_POST["date2"];                
                     $name = $_POST["name"];  
                     // var_dump($machineno);                 
                     // var_dump($name);                 
                     $sno = 0;
-                    if ($machineno == 'All' && $name == 'All' ) {
-                        $sql = "SELECT * FROM `production` WHERE date >='$date1' AND date <='$date2' AND duty ='$duty'  ORDER BY `production`.`date` ASC";
-                    }elseif ($machineno == 'All') {
-                        $sql = "SELECT * FROM `production` WHERE date >='$date1' AND date <='$date2' AND duty ='$duty' AND name='$name'  ORDER BY `production`.`date` ASC";
+                    if ($name == 'All' ) {
+                        $sql = "SELECT * FROM `dhagacuting` WHERE date >='$date1' AND date <='$date2'  ORDER BY `dhagacuting`.`date` ASC";
                     }
                     else {
                         
-                        $sql = "SELECT * FROM `production` WHERE date >='$date1' AND date <='$date2' AND duty='$duty' AND machineno='$machineno' AND name='$name'  ORDER BY `production`.`date` ASC";
+                        $sql = "SELECT * FROM `dhagacuting` WHERE date >='$date1' AND date <='$date2' AND name='$name'  ORDER BY `dhagacuting`.`date` ASC";
                     }
                     
                     // var_dump($sql);
@@ -165,16 +134,13 @@ include "../../functionality/productionCrud.php";
                             $sno += 1;
                             echo '
                             <tr>       
-                                <td> '. $row['machineno'] .'</td>
                                 <td> '. $row['name'] .'</td>
-                                <td> '. $row['production'] .'</td>
-                                <td> '. $row['duty'] .'</td>
-                                <td> '. $row['frame'] .'</td>
-                                <td> '. $row['tb'] .'</td>
-                                <td> '. $row['date'] .'</td>
+                                <td> '. $row['saree'] .'</td>
+                                <td> '. $row['price'] .'</td>
                                 <td> '. $row['total'] .'</td>
-                                <td><button id='.$row['sno'].' class="pedit btn btn-sm btn-success" >Edit</button> 
-                                    <button id ='. $row['sno'].' class="delete btn btn-sm btn-danger">Delete</button>
+                                <td> '. $row['date'] .'</td>
+                                <td><button id='.$row['sno'].' class="dedit btn btn-sm btn-success" >Edit</button> 
+                                    <button id ='. $row['sno'].' name='.$row['sno'].' class="ddelete btn btn-sm btn-danger">Delete</button>
                                 </td>
                             </tr>
                             ';
@@ -184,19 +150,16 @@ include "../../functionality/productionCrud.php";
                 }else {
                     $date1 =  $_SESSION["date1"];
                     $date2 =  $_SESSION["date2"];
-                    $duty = $_SESSION["duty"];
-                    $machineno = $_SESSION["machineno"]; 
                     $name = $_SESSION["name"];                   
                     $sno = 0;
-                    if ($machineno == 'All' && $name == 'All') {
-                        $sql = "SELECT * FROM `production` WHERE date >='$date1' AND date <='$date2' AND duty='$duty'  ORDER BY `production`.`date` ASC";
-                    }elseif ($machineno == 'All') {
-                        $sql = "SELECT * FROM `production` WHERE date >='$date1' AND date <='$date2' AND duty ='$duty' AND name='$name'  ORDER BY `production`.`date` ASC";
+                    if ($name == 'All' ) {
+                        $sql = "SELECT * FROM `dhagacuting` WHERE date >='$date1' AND date <='$date2'  ORDER BY `dhagacuting`.`date` ASC";
                     }
                     else {
                         
-                        $sql = "SELECT * FROM `production` WHERE date >='$date1' AND date <='$date2' AND duty='$duty' AND machineno='$machineno' AND name='$name'  ORDER BY `production`.`date` ASC";
+                        $sql = "SELECT * FROM `dhagacuting` WHERE date >='$date1' AND date <='$date2' AND name='$name'  ORDER BY `dhagacuting`.`date` ASC";
                     }
+                    
                     
                     // var_dump($sql);
                     $result = mysqli_query($conn,$sql);
@@ -208,16 +171,13 @@ include "../../functionality/productionCrud.php";
                             $sno += 1;
                             echo '
                             <tr>       
-                                <td> '. $row['machineno'] .'</td>
                                 <td> '. $row['name'] .'</td>
-                                <td> '. $row['production'] .'</td>
-                                <td> '. $row['duty'] .'</td>
-                                <td> '. $row['frame'] .'</td>
-                                <td> '. $row['tb'] .'</td>
-                                <td> '. $row['date'] .'</td>
+                                <td> '. $row['saree'] .'</td>
+                                <td> '. $row['price'] .'</td>
                                 <td> '. $row['total'] .'</td>
-                                <td><button id='.$row['sno'].' class="pedit btn btn-sm btn-success" >Edit</button> 
-                                    <button id ='. $row['sno'].' class="delete btn btn-sm btn-danger">Delete</button>
+                                <td> '. $row['date'] .'</td>
+                                <td><button id='.$row['sno'].' class="dedit btn btn-sm btn-success" >Edit</button> 
+                                    <button id ='. $row['sno'].' name='.$row['sno'].' class="ddelete btn btn-sm btn-danger">Delete</button>
                                 </td>
                             </tr>
                             ';
@@ -248,9 +208,8 @@ include "../../functionality/productionCrud.php";
                 $_SESSION["name"] = 'All';
                 $date1 = $_SESSION["date1"];
                 $date2 = $_SESSION["date2"];
-                $duty = $_SESSION["duty"];
                 
-                $sql = "SELECT SUM(total) FROM `production` WHERE date>='$date1' AND date<='$date2' AND duty='$duty'  ORDER BY `production`.`date` ASC";
+                $sql = "SELECT SUM(total) FROM `dhagacuting` WHERE date>='$date1' AND date<='$date2'  ORDER BY `dhagacuting`.`date` ASC";
                 // echo $sql;
                 $result = mysqli_query($conn,$sql);
                 $row = mysqli_fetch_assoc($result);
@@ -262,15 +221,14 @@ include "../../functionality/productionCrud.php";
                 $_SESSION["name"] =  $_POST['name'];
                 $date1 = $_SESSION["date1"];
                 $date2 = $_SESSION["date2"];
-                $duty = $_SESSION['duty'];
                 $sql = "";
                 // var_dump($_SESSION["date1"]);
                 // var_dump($_SESSION["date2"]);
                 if ($_POST['name']=='All') {
-                    $sql = "SELECT SUM(total) FROM `production` WHERE date>='$date1' AND date<='$date2' AND duty='$duty'  ORDER BY `production`.`date` ASC";
+                    $sql = "SELECT SUM(total) FROM `dhagacuting` WHERE date>='$date1' AND date<='$date2'  ORDER BY `dhagacuting`.`date` ASC";
                    
                 }else { 
-                    $sql = "SELECT SUM(total) FROM `production` WHERE date>='$date1' AND date<='$date2' AND name='$name'  ORDER BY `production`.`date` ASC";
+                    $sql = "SELECT SUM(total) FROM `dhagacuting` WHERE date>='$date1' AND date<='$date2' AND name='$name'  ORDER BY `dhagacuting`.`date` ASC";
                 }
                 // var_dump($sql);
                 $result = mysqli_query($conn,$sql);
@@ -283,7 +241,7 @@ include "../../functionality/productionCrud.php";
     <div class="container">
         <h5>Check Amount</h5>
         <div class="row my-2 ">
-            <form action="/page/ledger/report.php" method="post">
+            <form action="/page/ledger/dhagacutingReport.php" method="post">
                 <div class="mb-3 col-4">
                     <label for="title" class="form-label">Employee Name :</label><br>
 
@@ -293,7 +251,7 @@ include "../../functionality/productionCrud.php";
                         </option>
 
                         <?php
-                            $sql = 'SELECT * FROM `account`';
+                            $sql = 'SELECT * FROM `account` where category="DHAGACUTING"';
                             $result = mysqli_query($conn,$sql);
                            
                            

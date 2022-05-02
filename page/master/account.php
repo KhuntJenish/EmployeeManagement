@@ -1,7 +1,10 @@
 <?php
+session_start(); 
 $_SESSION['page'] = "account";
 include "../../functionality/conn.php";
-
+if ($_SESSION['logout'] == true) {
+    header("location: login.php");
+}  
 ?>
 
 <!doctype html>
@@ -16,7 +19,7 @@ include "../../functionality/conn.php";
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 
-    <title>Hello, world!</title>
+    <title>account panal</title>
 </head>
 
 <body>
@@ -147,7 +150,7 @@ include "../../functionality/conn.php";
             console.log(sno);
             if (confirm("Are you sure delete this Notes!")) {
                 console.log("yes");
-                window.location = `/employee/page/master/account.php?delete=${sno}`;
+                window.location = `/page/master/account.php?delete=${sno}`;
             } else {
                 console.log("no");
             }

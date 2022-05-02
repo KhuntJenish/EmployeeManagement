@@ -1,8 +1,12 @@
 <?php
 session_start(); 
-$_SESSION['page'] = "addproduction";
+if ($_SESSION['logout'] == true) {
+    header("location: login.php");
+}  
+$_SESSION['page'] = "adddhagacuting";
+
 include "../../functionality/conn.php";
-include "../../functionality/productionCrud.php";
+include "../../functionality/dhagacutingCrud.php";
 
 ?>
 
@@ -23,7 +27,7 @@ include "../../functionality/productionCrud.php";
     <link rel="stylesheet" href="//cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
 
 
-    <title>Account - Project</title>
+    <title>Add - dhagacuting</title>
 
 </head>
 
@@ -31,34 +35,23 @@ include "../../functionality/productionCrud.php";
 
     <?php 
     // include "component/purchaseModal.php";
-    include "../../component/addProductionModal.php";
+    include "../../component/dhagacutingModal.php";
     include "../../component/navbar.php";
-    // include "../../component/alert.php";
+    include "../../component/alert.php";
     ?>
 
     <div class="container my-4">
-        <h2>Add a Production Report</h2>
 
-        <form action="/employee/page/production/addProduction.php" method="post">
+        <h2>Add a Dhagacuting Report</h2>
+
+        <form action="/page/transaction/adddhagacuting.php" method="post">
 
             <div class="row">
-                <div class="mb-3 col-2">
-                    <label for="title" class="form-label"> Machine no. :</label>
-                    <select class="form-select" id="machineno" name="machineno" autofocus >
-                        <?php
-                
-                            for ($i=1; $i <= 12  ; $i++) { 
-                                echo '<option value="'. $i.'">'.$i.'</option>';
-                            }
-
-                        ?>
-                    </select>
-                </div>
-                <div class="mb-3 col-6">
-                    <label for="title" class="form-label"> NAME :</label>
+                <div class="mb-3 col-4">
+                    <label for="title" class="form-label">Name :</label>
                     <select class="form-select" id="name" name="name" autofocus>
                         <?php
-                            $sql = 'SELECT * FROM `account`';
+                            $sql = 'SELECT * FROM `account` where category="DHAGACUTING"';
                             $result = mysqli_query($conn,$sql);
                             $gst = '';
                             // $row = mysqli_fetch_array($result);
@@ -69,38 +62,20 @@ include "../../functionality/productionCrud.php";
                         ?>
                     </select>
                 </div>
-                <div class="mb-3 col-4">
-                    <label for="title" class="form-label">PRODUCTION :</label>
+                <div class="mb-3 col-2">
+                    <label for="title" class="form-label">Saree/Meter :</label>
                     <input type="text" class="form-control" id="production" name="production"
                         aria-describedby="emailHelp">
                 </div>
-            </div>
-
-            <div class="row">
-                <div class="mb-3 col-3">
-                    <label for="title" class="form-label"> duty :</label>
-                    <select class="form-select" id="duty" name="duty" autofocus>
-                        <option value="DAY">DAY</option>
-                        <option value="NIGHT">NIGHT</option>
-
-                    </select>
+                <div class="mb-3 col-2">
+                    <label for="title" class="form-label">Price :</label>
+                    <input type="text" class="disc form-control " id="price" name="price" value="3">
                 </div>
-                <div class="mb-3 col-3">
-                    <label for="title" class="form-label">FRAME :</label>
-                    <input type="text" class="amount form-control" id="frame" name="frame">
-                </div>
-                <div class="mb-3 col-3">
-                    <label for="title" class="form-label">T.B. :</label>
-                    <input type="text" class="disc form-control " id="tb" name="tb" aria-describedby="emailHelp">
-                </div>
-                <div class="mb-3 col-3">
+                <div class="mb-3 col-4">
                     <label for="title" class="form-label">Date :</label>
                     <input type="date" class="form-control" id="date" name="date" value='<?php echo date('Y-m-d');?>'>
                 </div>
             </div>
-
-
-
 
             <div class="d-grid gap-2">
                 <button class="btn btn-secondary btn-lg" type="submit" id="adddata" name="add">Add </button>
@@ -115,23 +90,22 @@ include "../../functionality/productionCrud.php";
         <table class="table" id="myTable">
             <thead>
                 <tr>
-                    <th scope="col">Machine No.</th>
                     <th scope="col">Name</th>
-                    <th scope="col">Production</th>
-                    <th scope="col">duty</th>
-                    <th scope="col">Frame</th>
-                    <th scope="col">T.B.</th>
+                    <th scope="col">Saree</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Total</th>
                     <th scope="col">Date</th>
-                    <th scope="col">function</th>
+                    <th scope="col">Fucntion</th>
                 </tr>
             </thead>
             <tbody>
 
                 <?php
-                    $date1 = date('Y-m-d');
+                    // $date1 =date("Y-m-d", strtotime ( '-1 day' , strtotime(date('Y-m-d'))));
+                    $date1 =date('Y-m-d');
                                         
                     $sno = 0;
-                    $sql = "SELECT * FROM `production` WHERE date ='$date1'";
+                    $sql = "SELECT * FROM `dhagacuting` WHERE date ='$date1'";
                     
                     $result = mysqli_query($conn,$sql);
                     // var_dump($sql);
@@ -143,15 +117,13 @@ include "../../functionality/productionCrud.php";
                             $sno += 1;
                             echo '
                             <tr>       
-                                <td> '. $row['machineno'] .'</td>
                                 <td> '. $row['name'] .'</td>
-                                <td> '. $row['production'] .'</td>
-                                <td> '. $row['duty'] .'</td>
-                                <td> '. $row['frame'] .'</td>
-                                <td> '. $row['tb'] .'</td>
+                                <td> '. $row['saree'] .'</td>
+                                <td> '. $row['price'] .'</td>
+                                <td> '. $row['total'] .'</td>
                                 <td> '. $row['date'] .'</td>
-                                <td><button id='.$row['sno'].' class="pedit btn btn-sm btn-success" >Edit</button> 
-                                    <button id ='. $row['sno'].' class="delete btn btn-sm btn-danger">Delete</button>
+                                <td><button id='.$row['sno'].' class="dedit btn btn-sm btn-success" >Edit</button> 
+                                    <button id ='. $row['sno'].' name='.$row['sno'].' class="ddelete btn btn-sm btn-danger">Delete</button>
                                 </td>
                             </tr>
                             ';
@@ -191,7 +163,14 @@ include "../../functionality/productionCrud.php";
     });
     </script>
     <script src="../../myscript.js"></script>
-
+    <script>
+  
+    // function reload() {
+    //     // window.location = `/account/index.php?delete=${sno}`;
+    //     location.reload();
+    //     console.log('reload');
+    // }
+    </script>
 </body>
 
 </html>

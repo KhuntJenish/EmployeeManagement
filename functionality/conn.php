@@ -1,8 +1,8 @@
 <?php 
 $servername = "localhost";
-$username = "root";
-$password = "";
-$database = "emp";
+$username = "id18858160_embroiderymanagement";
+$password = "2ww=/DVfJEIlhK3G";
+$database = "id18858160_emp";
 $insert = false;
 $update = false;
 $delete = false;

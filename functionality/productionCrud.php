@@ -13,7 +13,12 @@ include "conn.php";
         $result = mysqli_query($conn,$sql);
         if ($result) {
           # code...
-          header('Location:addProduction.php');
+          if ($_SESSION['page'] == "addproduction") {
+            echo '<script>window.location.href = "/page/transaction/addProduction.php";</script>';
+          }
+          if ($_SESSION['page'] == "report") {
+            echo '<script>window.location.href = "/page/ledger/report.php";</script>';
+          }
         }
         if (!$result) {
           $delete = true;
@@ -47,7 +52,12 @@ include "conn.php";
       // var_dump($tb);
       $result = mysqli_query($conn, $sql);
       if ($result) {
-        header('Location:report.php');
+        if ($_SESSION['page'] == "addproduction") {
+          echo '<script>window.location.href = "/page/transaction/addProduction.php";</script>';
+        }
+        if ($_SESSION['page'] == "report") {
+          echo '<script>window.location.href = "/page/ledger/report.php";</script>';
+        }
       }
       else{
         $update = true;
@@ -66,18 +76,10 @@ include "conn.php";
       $tb = $_POST['tb'];
       $date = $_POST['date'];
       
-      if ($machineno == "9" || $machineno == "10" ||$machineno == "11" ||$machineno == "12" )
-      {
-        $total = ($production / 100000) * 200;
-      }else {
-        $total = ($production / 100000) * 125;
-      }
+      
 
       // item detail
-      
-      // $tb = $_POST['ptb'];
 
-      var_dump($total);
     //   echo "hello";
     //   var_dump($machineno);
     //   var_dump($name);
@@ -96,18 +98,31 @@ include "conn.php";
         ($tb != null || $tb != "") 
       ) 
       {
+          if ($machineno == "9" || $machineno == "10" ||$machineno == "11" ||$machineno == "12" )
+          {
+            $total = ($production / 100000) * 200;
+          }else {
+            $total = ($production / 100000) * 125;
+          }
+          var_dump($total);
+
         $sql = "INSERT INTO `production` (`machineno`, `name`, `production`,`duty`, `frame`, `tb`,`date`,`total`) VALUES ('$machineno', '$name', '$production','$duty', '$frame', '$tb','$date','$total')";
         $result = mysqli_query($conn,$sql);
-        var_dump($sql);
+        // var_dump($sql);
         
         if (!$result) {
           $insert = true;
         }
         else
         {
-            header('Location:addProduction.php');
+          if ($_SESSION['page'] == "addproduction") {
+            echo '<script>window.location.href = "/page/transaction/addProduction.php";</script>';
+          }
           // $insert = true;
         }
+      }else 
+      {
+        $insert = true;
       }
       
     }

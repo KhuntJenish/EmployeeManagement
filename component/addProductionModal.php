@@ -8,7 +8,7 @@
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
-            <form action="/employee/page/ledger/report.php" method="POST">
+            <form action="/page/ledger/report.php" method="POST">
                 <div class="modal-body">
                     <input type="hidden" name="sno" id="snoEdit">
                     <div class="row">
